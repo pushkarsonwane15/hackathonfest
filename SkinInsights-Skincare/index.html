@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKININSIGHTS LAB — Clinical Minimalist Skincare & AI Face Scanner</title>
+  <meta name="description" content="Minimalist clinical skincare powered by computer vision. Scan your skin in 3 seconds for personalized active formulations and bespoke lifestyle guidance.">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              black: '#000000',
+              white: '#FFFFFF',
+              charcoal: '#121212',
+              surface: '#F8F9FA',
+              border: '#E5E7EB',
+              muted: '#71717A',
+              accent: '#10B981',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            display: ['"Space Grotesk"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-white text-black font-sans antialiased min-h-screen flex flex-col selection:bg-black selection:text-white">
+
+  <!-- ================= TOP ANNOUNCEMENT BAR ================= -->
+  <aside class="bg-black text-white text-[11px] tracking-widest uppercase font-mono py-2 px-4 text-center border-b border-neutral-800 flex items-center justify-center gap-3">
+    <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+    <span>Complimentary Carbon-Neutral Shipping on all clinical regimens over $50</span>
+    <span class="hidden md:inline text-neutral-500">|</span>
+    <span class="hidden md:inline text-neutral-400">Bio-Fermented Actives · Zero Synthetic Fragrance</span>
+  </aside>
+
+  <!-- ================= PRIMARY NAVIGATION ================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-neutral-200 transition-all">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Logo -->
+      <a href="#" class="flex flex-col group">
+        <span class="font-display font-bold text-xl sm:text-2xl tracking-tighter text-black flex items-center gap-1.5">
+          SKININSIGHTS
+          <span class="text-[10px] font-mono font-normal uppercase px-1.5 py-0.5 bg-black text-white tracking-widest rounded-none">LAB</span>
+        </span>
+        <span class="text-[9px] font-mono tracking-widest uppercase text-neutral-400 group-hover:text-black transition-colors">
+          Clinical Dermatological AI
+        </span>
+      </a>
+
+      <!-- Desktop Links -->
+      <nav class="hidden md:flex items-center gap-8 text-xs font-semibold uppercase tracking-wider text-neutral-600">
+        <a href="#scanner-section" id="btn-nav-scan" class="text-black border-b-2 border-black pb-1 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          AI Face Scanner
+        </a>
+        <a href="#catalog-section" class="hover:text-black transition-colors">Catalog</a>
+        <a href="#clinical-ethos" class="hover:text-black transition-colors">Ethos</a>
+        <a href="#lifestyle-tips-section" class="hover:text-black transition-colors">Lifestyle Lab</a>
+      </nav>
+
+      <!-- Right Action Tools -->
+      <div class="flex items-center gap-4">
+        <!-- Audio Feedback Toggle -->
+        <button id="btn-toggle-sound" class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 border border-neutral-200 hover:border-black text-xs transition-colors" title="Toggle scanning audio">
+          <svg class="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
+          <span class="font-mono text-[11px]">Audio ON</span>
+        </button>
+
+        <!-- Cart Button -->
+        <button id="btn-open-cart" class="relative p-2.5 text-black hover:text-neutral-600 transition-colors" aria-label="Open Cart">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+          </svg>
+          <span id="cart-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-black text-white text-[10px] font-mono font-bold flex items-center justify-center rounded-full border-2 border-white" style="display: none;">0</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT ================= -->
+  <main class="flex-1">
+
+    <!-- ================= SECTION 1: HERO & SKININSIGHTS LIVE SCANNER ================= -->
+    <section id="scanner-section" class="relative border-b border-neutral-200 bg-white overflow-hidden py-12 lg:py-20">
+      
+      <!-- Subtle Background Technical Grid -->
+      <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#000000 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+
+        <!-- HERO VIEW STATE: Initial State Before Scan -->
+        <div id="hero-intro-view" class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <!-- Left Column: Copy & Prominent Scan Button -->
+          <div class="lg:col-span-6 space-y-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-neutral-100 border border-neutral-200 text-black text-xs font-mono uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Neural Derma-Diagnostics v3.2
+            </div>
+
+            <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-black leading-[1.08]">
+              Targeted Skincare Engineered By Computer Vision.
+            </h1>
+
+            <p class="text-neutral-600 text-base sm:text-lg max-w-xl font-normal leading-relaxed">
+              Stop guessing your routine. Our live camera scanner analyses 68 facial points in 3 seconds to pinpoint acne, localized pigmentation, and pore dilation with clinical accuracy.
+            </p>
+
+            <!-- Prominent 'Scan Your Face' Button -->
+            <div class="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+              <button 
+                id="btn-hero-scan"
+                class="btn-primary group px-8 py-5 text-sm uppercase tracking-widest font-bold flex items-center justify-center gap-3 shadow-xl hover:shadow-2xl"
+                aria-label="Scan Your Face with AI"
+              >
+                <!-- Reticle Icon -->
+                <svg class="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7V5a2 2 0 012-2h2M17 3h2a2 2 0 012 2v2M21 17v2a2 2 0 01-2 2h-2M7 21H5a2 2 0 01-2-2v-2M12 8v8M8 12h8"/>
+                </svg>
+                Scan Your Face
+                <span class="font-mono text-neutral-400 text-xs font-normal">| 3s AI</span>
+              </button>
+
+              <a href="#catalog-section" class="px-6 py-5 border border-neutral-300 hover:border-black text-black text-sm uppercase tracking-wider font-semibold text-center transition-colors">
+                Explore Catalog (6)
+              </a>
+            </div>
+
+            <!-- Trust Metrics -->
+            <div class="pt-8 border-t border-neutral-100 grid grid-cols-3 gap-4 text-center sm:text-left">
+              <div>
+                <p class="font-display font-bold text-2xl text-black">99.2%</p>
+                <p class="text-[11px] font-mono uppercase text-neutral-400 mt-0.5">Biometric Precision</p>
+              </div>
+              <div>
+                <p class="font-display font-bold text-2xl text-black">3 Sec</p>
+                <p class="text-[11px] font-mono uppercase text-neutral-400 mt-0.5">Neural Scan Time</p>
+              </div>
+              <div>
+                <p class="font-display font-bold text-2xl text-black">100%</p>
+                <p class="text-[11px] font-mono uppercase text-neutral-400 mt-0.5">Private / On-Device</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Visual Teaser / Scanner Simulator Viewport Preview -->
+          <div class="lg:col-span-6 flex justify-center">
+            <div class="relative w-full max-w-md aspect-[4/5] bg-neutral-900 border border-neutral-800 shadow-2xl p-2 rounded-sm overflow-hidden group cursor-pointer" onclick="document.getElementById('btn-hero-scan').click()">
+              
+              <!-- Subtle camera lens bezel -->
+              <div class="relative w-full h-full bg-neutral-950 overflow-hidden flex items-center justify-center">
+                
+                <!-- Realistic Clinical Portrait Face -->
+                <img 
+                  src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1000&q=85" 
+                  alt="Clinical Facial Scan Feed" 
+                  class="w-full h-full object-cover opacity-85 filter contrast-105"
+                  onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1000&q=85'"
+                />
+
+                <!-- Biometric Grid Overlay -->
+                <div class="absolute inset-0 biometric-grid opacity-40"></div>
+
+                <!-- Subtle Viewfinder Frame Corners -->
+                <div class="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-white/80"></div>
+                <div class="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-white/80"></div>
+                <div class="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-white/80"></div>
+                <div class="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-white/80"></div>
+
+                <!-- Center Prompt Overlay -->
+                <div class="absolute inset-0 bg-black/30 backdrop-blur-[1px] flex flex-col items-center justify-center text-center p-6 group-hover:bg-black/20 transition-all">
+                  <div class="w-16 h-16 rounded-full bg-black/80 border border-white/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                  </div>
+                  <span class="inline-block px-4 py-1.5 bg-black text-white text-xs font-mono tracking-widest uppercase mb-2">
+                    Click to Open Camera
+                  </span>
+                  <p class="text-white/80 text-xs max-w-xs font-light">
+                    Simulated live feed with biometric acne, pore, and pigmentation markers
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- LIVE SCANNER ACTIVE STATE (Appears when 'Scan Your Face' is clicked) -->
+        <div id="scanner-live-view" class="hidden transition-all duration-500">
+          
+          <div class="max-w-4xl mx-auto bg-neutral-950 text-white border border-neutral-800 shadow-2xl overflow-hidden">
+            
+            <!-- Live Viewport Header Bar -->
+            <div class="bg-black/90 px-4 py-3 border-b border-neutral-800 flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+              <div class="flex items-center gap-3">
+                <span id="camera-status-indicator" class="flex items-center gap-2 text-emerald-400 font-semibold tracking-wider uppercase">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                  ● INITIALIZING WEBCAM...
+                </span>
+                <span class="text-neutral-500 hidden sm:inline">|</span>
+                <span class="text-neutral-400 hidden sm:inline">FPS: 60</span>
+                <span class="text-neutral-500 hidden sm:inline">|</span>
+                <span class="text-neutral-400 hidden sm:inline">LATENCY: 12ms</span>
+              </div>
+
+              <!-- Camera Switcher -->
+              <div class="flex items-center gap-3">
+                <button 
+                  id="btn-toggle-camera"
+                  class="px-2.5 py-1 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 text-[11px] uppercase tracking-wider font-mono flex items-center transition-colors"
+                >
+                  <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
+                  Webcam Live (Switch to Model)
+                </button>
+              </div>
+            </div>
+
+            <!-- Simulated Camera Feed Viewport with Overlays -->
+            <div id="scanner-viewport-container" class="relative w-full aspect-[4/3] sm:aspect-[16/10] bg-black overflow-hidden flex items-center justify-center select-none">
+              
+              <!-- 1. Simulated Clinical Face Feed (Visible immediately as base feed) -->
+              <img 
+                id="simulated-feed"
+                src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=1400&q=85" 
+                alt="Simulated Live Subject Face"
+                class="w-full h-full object-cover filter contrast-105"
+                onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1400&q=85'"
+              />
+
+              <!-- 2. Real Webcam Stream (Mirrored like a selfie camera, shown when camera connects) -->
+              <video 
+                id="webcam-video" 
+                autoplay 
+                playsinline 
+                muted 
+                class="w-full h-full object-cover transform -scale-x-100 hidden"
+              ></video>
+
+              <!-- Real-Time Face Recognition Tracking Box & HUD -->
+              <div id="face-tracking-box" class="absolute pointer-events-none transition-all duration-75 ease-out z-25 border border-emerald-400/90 shadow-[0_0_15px_rgba(16,185,129,0.4)] hidden">
+                <div class="absolute -top-1 -left-1 w-3 h-3 border-t-2 border-l-2 border-emerald-400"></div>
+                <div class="absolute -top-1 -right-1 w-3 h-3 border-t-2 border-r-2 border-emerald-400"></div>
+                <div class="absolute -bottom-1 -left-1 w-3 h-3 border-b-2 border-l-2 border-emerald-400"></div>
+                <div class="absolute -bottom-1 -right-1 w-3 h-3 border-b-2 border-r-2 border-emerald-400"></div>
+                <div class="absolute -top-6 left-0 bg-black/90 text-emerald-400 text-[9px] font-mono px-2 py-0.5 border border-emerald-500/50 whitespace-nowrap flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+                  FACE DETECTED · TRACKING ACTIVE
+                </div>
+              </div>
+
+              <!-- Camera Permission / Context Notice (Shown if browser denies webcam) -->
+              <div id="camera-permission-notice" class="hidden absolute inset-0 z-40 bg-neutral-950/95 p-6 flex flex-col items-center justify-center text-center">
+                <div class="w-14 h-14 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center mb-4">
+                  <svg class="w-7 h-7 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                  </svg>
+                </div>
+                <h4 class="font-display font-bold text-lg text-white mb-2">Camera Access Recommended</h4>
+                <p id="camera-error-detail" class="text-xs text-neutral-400 max-w-md leading-relaxed mb-6 font-mono">
+                  To view your face in real-time, please allow camera permissions in your browser.
+                </p>
+                <div class="flex flex-wrap items-center justify-center gap-3">
+                  <button id="btn-retry-camera" class="btn-primary px-5 py-2.5 text-xs font-mono uppercase tracking-wider font-bold">
+                    Retry Camera Access
+                  </button>
+                  <button id="btn-use-simulated" class="px-5 py-2.5 border border-neutral-600 hover:border-white text-white text-xs font-mono uppercase tracking-wider font-semibold transition-colors">
+                    Use Simulated Model
+                  </button>
+                </div>
+              </div>
+
+              <!-- 3. Biometric Matrix Grid -->
+              <div class="absolute inset-0 biometric-grid opacity-30 pointer-events-none"></div>
+
+              <!-- 4. High-Tech Sweeping Laser Beam -->
+              <div class="laser-beam"></div>
+
+              <!-- 5. Viewfinder HUD Brackets & Reticles -->
+              <div class="absolute inset-6 border border-emerald-500/20 pointer-events-none">
+                <!-- Top-Left Corner -->
+                <div class="absolute -top-1 -left-1 w-8 h-8 border-t-2 border-l-2 border-emerald-400"></div>
+                <!-- Top-Right Corner -->
+                <div class="absolute -top-1 -right-1 w-8 h-8 border-t-2 border-r-2 border-emerald-400"></div>
+                <!-- Bottom-Left Corner -->
+                <div class="absolute -bottom-1 -left-1 w-8 h-8 border-b-2 border-l-2 border-emerald-400"></div>
+                <!-- Bottom-Right Corner -->
+                <div class="absolute -bottom-1 -right-1 w-8 h-8 border-b-2 border-r-2 border-emerald-400"></div>
+                
+                <!-- Center Target Reticle -->
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-28 h-28 border border-emerald-500/30 rounded-full flex items-center justify-center pointer-events-none">
+                  <div class="w-2 h-2 bg-emerald-400 rounded-full"></div>
+                </div>
+              </div>
+
+              <!-- ================= DYNAMIC PINPOINT MARKERS & CONNECTING LINES ================= -->
+              <!-- MARKER 1: FOREHEAD -> "Open Pores" -->
+              <div id="marker-pores" class="absolute top-[20%] left-[48%] opacity-0 scale-90 transition-all duration-300 pointer-events-none z-30">
+                <!-- Glowing Pinpoint Dot -->
+                <div class="relative flex items-center justify-center">
+                  <div class="absolute w-6 h-6 bg-amber-400/30 rounded-full radar-ping"></div>
+                  <div class="w-3.5 h-3.5 bg-amber-400 rounded-full border-2 border-white shadow-[0_0_12px_#fbbf24]"></div>
+                </div>
+                <!-- Connector Line & Floating Tag -->
+                <div class="absolute left-3 bottom-3 flex items-center pointer-events-auto">
+                  <svg class="w-16 h-12 overflow-visible" viewBox="0 0 60 40">
+                    <polyline points="0,35 30,10 60,10" fill="none" stroke="#fbbf24" stroke-width="2" class="connector-line" />
+                    <circle cx="60" cy="10" r="3" fill="#fbbf24" />
+                  </svg>
+                  <div class="bg-black/95 text-white border border-amber-400/80 px-3 py-1.5 shadow-2xl backdrop-blur-md rounded-none whitespace-nowrap ml-1">
+                    <div class="flex items-center gap-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                      <span class="font-display font-bold text-xs uppercase tracking-wider text-amber-400">Open Pores</span>
+                    </div>
+                    <span class="text-[10px] text-neutral-300 font-mono block mt-0.5">T-Zone Sebum · 68% Density</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MARKER 2: CHEEK/JAW -> "Acne Detected Here" -->
+              <div id="marker-acne" class="absolute top-[52%] left-[34%] opacity-0 scale-90 transition-all duration-300 pointer-events-none z-30">
+                <!-- Glowing Pinpoint Dot -->
+                <div class="relative flex items-center justify-center">
+                  <div class="absolute w-7 h-7 bg-red-500/40 rounded-full radar-ping"></div>
+                  <div class="w-4 h-4 bg-red-500 rounded-full border-2 border-white shadow-[0_0_14px_#ef4444]"></div>
+                </div>
+                <!-- Connector Line & Floating Tag -->
+                <div class="absolute right-3 top-2 flex items-center flex-row-reverse pointer-events-auto">
+                  <svg class="w-16 h-12 overflow-visible" viewBox="0 0 60 40">
+                    <polyline points="60,10 30,30 0,30" fill="none" stroke="#ef4444" stroke-width="2" class="connector-line" />
+                    <circle cx="0" cy="30" r="3" fill="#ef4444" />
+                  </svg>
+                  <div class="bg-black/95 text-white border border-red-500 px-3.5 py-1.5 shadow-2xl backdrop-blur-md rounded-none whitespace-nowrap mr-1">
+                    <div class="flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+                      <span class="font-display font-bold text-xs uppercase tracking-wider text-red-400">Acne Detected Here</span>
+                    </div>
+                    <span class="text-[10px] text-neutral-300 font-mono block mt-0.5">Active Papules · Grade 2</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- MARKER 3: RIGHT CHEEKBONE/TEMPLE -> "Pigmentation" -->
+              <div id="marker-pigmentation" class="absolute top-[42%] left-[64%] opacity-0 scale-90 transition-all duration-300 pointer-events-none z-30">
+                <!-- Glowing Pinpoint Dot -->
+                <div class="relative flex items-center justify-center">
+                  <div class="absolute w-6 h-6 bg-cyan-400/30 rounded-full radar-ping"></div>
+                  <div class="w-3.5 h-3.5 bg-cyan-400 rounded-full border-2 border-white shadow-[0_0_12px_#22d3ee]"></div>
+                </div>
+                <!-- Connector Line & Floating Tag -->
+                <div class="absolute left-3 top-1 flex items-center pointer-events-auto">
+                  <svg class="w-16 h-12 overflow-visible" viewBox="0 0 60 40">
+                    <polyline points="0,15 25,35 60,35" fill="none" stroke="#22d3ee" stroke-width="2" class="connector-line" />
+                    <circle cx="60" cy="35" r="3" fill="#22d3ee" />
+                  </svg>
+                  <div class="bg-black/95 text-white border border-cyan-400/80 px-3.5 py-1.5 shadow-2xl backdrop-blur-md rounded-none whitespace-nowrap ml-1">
+                    <div class="flex items-center gap-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                      <span class="font-display font-bold text-xs uppercase tracking-wider text-cyan-400">Pigmentation</span>
+                    </div>
+                    <span class="text-[10px] text-neutral-300 font-mono block mt-0.5">Post-Acne PIH · Melanin 72%</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottom Telemetry HUD overlay in viewport -->
+              <div class="absolute bottom-4 inset-x-4 bg-black/85 backdrop-blur-md p-3 border border-neutral-800 flex flex-col sm:flex-row items-center justify-between gap-3 z-20">
+                <div class="flex items-center gap-2">
+                  <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+                  <span id="scan-telemetry-log" class="text-xs font-mono text-neutral-200 uppercase tracking-wider">
+                    CALCULATING BIOMETRIC TOPOGRAPHY...
+                  </span>
+                </div>
+                <div class="flex items-center gap-3 w-full sm:w-auto">
+                  <div class="w-36 h-2 bg-neutral-800 overflow-hidden border border-neutral-700">
+                    <div id="scan-progress-bar" class="h-full bg-emerald-400 transition-all duration-75" style="width: 0%;"></div>
+                  </div>
+                  <span id="scan-progress-percent" class="text-xs font-mono font-bold text-white min-w-[36px] text-right">0%</span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ================= PERSONALIZED 'AI SKIN REPORT' VIEW ================= -->
+        <!-- Appears automatically after the 3-second scan completes -->
+        <div id="ai-report-view" class="hidden transition-all duration-500 mt-6">
+          
+          <div class="bg-white border-2 border-black p-6 sm:p-10 shadow-2xl space-y-12">
+            
+            <!-- Report Header -->
+            <div class="border-b-2 border-black pb-8 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div>
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-black text-white text-[11px] font-mono uppercase tracking-widest mb-3">
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  Official Clinical Synthesis
+                </div>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-black tracking-tight">
+                  Personalized AI Skin Report
+                </h2>
+                <p class="text-xs font-mono text-neutral-500 uppercase tracking-widest mt-1">
+                  Report ID: #DERMA-8842 · Scan Accuracy: 99.2% · Processed In 3.0s
+                </p>
+              </div>
+
+              <!-- Re-Scan & Export Action Buttons -->
+              <div class="flex flex-wrap items-center gap-3">
+                <button 
+                  onclick="window.print()"
+                  class="px-4 py-3 border border-neutral-300 hover:border-black text-black text-xs font-mono uppercase tracking-widest font-semibold flex items-center gap-2 transition-colors"
+                  title="Save or Print Clinical Report PDF"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                  </svg>
+                  Export PDF
+                </button>
+                <button 
+                  id="btn-rescan"
+                  class="px-5 py-3 border border-neutral-300 hover:border-black text-black text-xs font-mono uppercase tracking-widest font-semibold flex items-center gap-2 transition-colors"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                  </svg>
+                  Scan Again
+                </button>
+              </div>
+            </div>
+
+            <!-- ================= REPORT SECTION A: SKIN PROFILE ================= -->
+            <div class="space-y-6">
+              <div class="flex items-center gap-3">
+                <span class="w-7 h-7 bg-black text-white text-xs font-mono font-bold flex items-center justify-center">A</span>
+                <h3 class="font-display font-bold text-xl uppercase tracking-wider text-black">
+                  Skin Profile
+                </h3>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-6 bg-neutral-50 border border-neutral-200 p-6">
+                <!-- Highlighted Detected Skin Type -->
+                <div class="md:col-span-5 flex flex-col justify-center border-b md:border-b-0 md:border-r border-neutral-200 pb-6 md:pb-0 md:pr-6">
+                  <span class="text-[11px] font-mono uppercase text-neutral-400 tracking-widest">Primary Detected Diagnosis</span>
+                  <div class="mt-2 inline-block">
+                    <span class="bg-black text-white text-xl sm:text-2xl font-display font-extrabold px-4 py-2 uppercase tracking-wide block">
+                      Oily, Acne-Prone
+                    </span>
+                  </div>
+                  <p class="text-xs text-neutral-600 mt-3 leading-relaxed">
+                    Elevated follicular sebum output coupled with hyperkeratinization in the pilosebaceous unit, producing active papules and visibly dilated T-zone pores.
+                  </p>
+                </div>
+
+                <!-- Diagnostic Metrics Breakdown -->
+                <div class="md:col-span-7 grid grid-cols-2 gap-4">
+                  <!-- Metric 1 -->
+                  <div class="bg-white p-4 border border-neutral-200">
+                    <div class="flex justify-between items-center text-xs font-mono mb-1">
+                      <span class="text-neutral-500 uppercase">Sebum Output</span>
+                      <span class="font-bold text-red-600">84% (High)</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-neutral-100 overflow-hidden">
+                      <div class="h-full bg-red-500" style="width: 84%;"></div>
+                    </div>
+                    <span class="text-[10px] text-neutral-400 block mt-2">Active lipid overproduction</span>
+                  </div>
+
+                  <!-- Metric 2 -->
+                  <div class="bg-white p-4 border border-neutral-200">
+                    <div class="flex justify-between items-center text-xs font-mono mb-1">
+                      <span class="text-neutral-500 uppercase">Pore Dilatation</span>
+                      <span class="font-bold text-amber-600">76% (Enlarged)</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-neutral-100 overflow-hidden">
+                      <div class="h-full bg-amber-500" style="width: 76%;"></div>
+                    </div>
+                    <span class="text-[10px] text-neutral-400 block mt-2">T-Zone & Cheeks stretched</span>
+                  </div>
+
+                  <!-- Metric 3 -->
+                  <div class="bg-white p-4 border border-neutral-200">
+                    <div class="flex justify-between items-center text-xs font-mono mb-1">
+                      <span class="text-neutral-500 uppercase">Hydration Index</span>
+                      <span class="font-bold text-amber-600">38% (Dehydrated)</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-neutral-100 overflow-hidden">
+                      <div class="h-full bg-amber-500" style="width: 38%;"></div>
+                    </div>
+                    <span class="text-[10px] text-neutral-400 block mt-2">Surface water deficit</span>
+                  </div>
+
+                  <!-- Metric 4 -->
+                  <div class="bg-white p-4 border border-neutral-200">
+                    <div class="flex justify-between items-center text-xs font-mono mb-1">
+                      <span class="text-neutral-500 uppercase">Pigment Score</span>
+                      <span class="font-bold text-cyan-600">62% (Moderate PIH)</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-neutral-100 overflow-hidden">
+                      <div class="h-full bg-cyan-500" style="width: 62%;"></div>
+                    </div>
+                    <span class="text-[10px] text-neutral-400 block mt-2">Post-inflammatory melanin</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Captured Facial Biometrics Preview (User's Face from Camera) -->
+              <div class="bg-neutral-950 text-white p-5 border border-neutral-800 flex flex-col md:flex-row items-center gap-6">
+                <div class="relative w-44 sm:w-52 aspect-[4/3] bg-neutral-900 border border-neutral-700 overflow-hidden flex-shrink-0">
+                  <img id="report-face-preview-img" src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=85" alt="Scanned Biometric Face" class="w-full h-full object-cover">
+                  <span id="report-face-source-badge" class="absolute top-2 left-2 bg-emerald-600 text-white text-[9px] font-mono font-bold px-2 py-0.5 uppercase tracking-wider">
+                    LIVE CAMERA BIOMETRICS
+                  </span>
+                </div>
+                <div class="flex-1 space-y-2 text-xs">
+                  <span class="text-[10px] font-mono uppercase text-emerald-400 tracking-wider">● Neural Landmarks Confirmed</span>
+                  <h4 class="font-display font-bold text-sm text-white">Your Face Topography Analysis</h4>
+                  <p class="text-neutral-400 text-xs leading-relaxed">
+                    Camera landmarks localized follicular sebum concentration on the forehead, active micro-papules on the mandibular zone, and post-acne pigmentation across the zygomatic arch.
+                  </p>
+                  <div class="flex flex-wrap gap-2 pt-2">
+                    <span class="bg-neutral-800 text-amber-300 border border-amber-500/30 text-[10px] font-mono px-2 py-1">Open Pores (T-Zone: 68%)</span>
+                    <span class="bg-neutral-800 text-red-400 border border-red-500/30 text-[10px] font-mono px-2 py-1">Acne Detected (Grade 2)</span>
+                    <span class="bg-neutral-800 text-cyan-300 border border-cyan-500/30 text-[10px] font-mono px-2 py-1">Pigmentation (PIH: 62%)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= REPORT SECTION B: LIFESTYLE & DIET TIPS ================= -->
+            <div id="lifestyle-tips-section" class="space-y-6 pt-4 border-t border-neutral-200">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="w-7 h-7 bg-black text-white text-xs font-mono font-bold flex items-center justify-center">B</span>
+                  <div>
+                    <h3 class="font-display font-bold text-xl uppercase tracking-wider text-black">
+                      Lifestyle & Diet Tips
+                    </h3>
+                    <p class="text-xs text-neutral-500">Actionable holistic protocols to accelerate topical recovery</p>
+                  </div>
+                </div>
+                <span class="hidden sm:inline-block text-[11px] font-mono uppercase bg-neutral-100 px-3 py-1 border border-neutral-200 text-neutral-600">
+                  Interactive Checklist
+                </span>
+              </div>
+
+              <!-- Actionable Cards Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Tip 1: Water -->
+                <div class="tip-interactive-card border border-neutral-300 hover:border-black p-6 bg-white transition-all cursor-pointer flex flex-col justify-between group">
+                  <div>
+                    <div class="flex items-center justify-between mb-4">
+                      <span class="w-9 h-9 rounded-full bg-blue-50 border border-blue-200 text-blue-700 flex items-center justify-center text-sm font-bold">
+                        💧
+                      </span>
+                      <input type="checkbox" checked class="w-4 h-4 accent-black cursor-pointer" aria-label="Toggle task completion">
+                    </div>
+                    <h4 class="font-display font-bold text-base text-black mb-2 group-hover:text-neutral-800">
+                      Drink 2-3 liters of water daily
+                    </h4>
+                    <p class="text-xs text-neutral-600 leading-relaxed">
+                      Dehydration triggers your sebaceous glands to overcompensate by releasing denser sebum. Sustained cellular hydration naturally thins oil secretions, preventing clogged pore channels.
+                    </p>
+                  </div>
+                  <div class="mt-4 pt-3 border-t border-neutral-100 text-[11px] font-mono text-neutral-500 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Target: Pore Clearness
+                  </div>
+                </div>
+
+                <!-- Tip 2: Sugar -->
+                <div class="tip-interactive-card border border-neutral-300 hover:border-black p-6 bg-white transition-all cursor-pointer flex flex-col justify-between group">
+                  <div>
+                    <div class="flex items-center justify-between mb-4">
+                      <span class="w-9 h-9 rounded-full bg-amber-50 border border-amber-200 text-amber-700 flex items-center justify-center text-sm font-bold">
+                        ⚡
+                      </span>
+                      <input type="checkbox" class="w-4 h-4 accent-black cursor-pointer" aria-label="Toggle task completion">
+                    </div>
+                    <h4 class="font-display font-bold text-base text-black mb-2 group-hover:text-neutral-800">
+                      Reduce sugar intake
+                    </h4>
+                    <p class="text-xs text-neutral-600 leading-relaxed">
+                      High glycemic spikes stimulate insulin and IGF-1 hormones, directly driving hyperkeratinization and acute inflammatory breakouts. Swap refined cane sugars with antioxidant-rich berries.
+                    </p>
+                  </div>
+                  <div class="mt-4 pt-3 border-t border-neutral-100 text-[11px] font-mono text-neutral-500 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Target: Acne Inflammation
+                  </div>
+                </div>
+
+                <!-- Tip 3: Junk Food -->
+                <div class="tip-interactive-card border border-neutral-300 hover:border-black p-6 bg-white transition-all cursor-pointer flex flex-col justify-between group">
+                  <div>
+                    <div class="flex items-center justify-between mb-4">
+                      <span class="w-9 h-9 rounded-full bg-red-50 border border-red-200 text-red-700 flex items-center justify-center text-sm font-bold">
+                        🚫
+                      </span>
+                      <input type="checkbox" class="w-4 h-4 accent-black cursor-pointer" aria-label="Toggle task completion">
+                    </div>
+                    <h4 class="font-display font-bold text-base text-black mb-2 group-hover:text-neutral-800">
+                      Avoid oily junk food
+                    </h4>
+                    <p class="text-xs text-neutral-600 leading-relaxed">
+                      Oxidized trans fats and reheated vegetable oils increase systemic oxidative stress, promoting sebum lipid peroxidation—the primary catalyst for cystic blackheads and comedones.
+                    </p>
+                  </div>
+                  <div class="mt-4 pt-3 border-t border-neutral-100 text-[11px] font-mono text-neutral-500 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Target: Sebum Lipid Balance
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- ================= REPORT SECTION C: AI PRODUCT MATCH (EXACTLY 2 PRODUCTS) ================= -->
+            <div class="space-y-6 pt-4 border-t border-neutral-200">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                  <span class="w-7 h-7 bg-black text-white text-xs font-mono font-bold flex items-center justify-center">C</span>
+                  <div>
+                    <h3 class="font-display font-bold text-xl uppercase tracking-wider text-black">
+                      AI Product Match
+                    </h3>
+                    <p class="text-xs text-neutral-500">Exactly 2 clinical formulations matched to treat your detected acne, pores & pigmentation</p>
+                  </div>
+                </div>
+
+                <!-- Quick Bundle Action -->
+                <button 
+                  id="btn-add-both-matches"
+                  class="btn-primary px-5 py-2.5 text-xs font-mono tracking-widest uppercase font-semibold flex items-center gap-2 self-start sm:self-auto"
+                >
+                  Add Complete 2-Step Routine ($52.00)
+                </button>
+              </div>
+
+              <!-- 2 Matched Products Grid -->
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Product Match 1: Salicylic Acid Cleanser -->
+                <div class="border-2 border-black p-6 bg-white flex flex-col justify-between relative">
+                  <!-- Match Header Badge -->
+                  <div class="flex items-center justify-between mb-4">
+                    <span class="bg-red-100 text-red-900 border border-red-300 text-[10px] font-mono font-bold tracking-widest uppercase px-2.5 py-1">
+                      Matched to: Acne Detected & Open Pores
+                    </span>
+                    <span class="text-xs font-mono text-neutral-400">AM & PM · Step 01</span>
+                  </div>
+
+                  <div class="flex gap-6 items-center mb-6">
+                    <div class="w-28 h-28 bg-[#F7F7F7] flex-shrink-0 p-2 border border-neutral-200 flex items-center justify-center">
+                      <img 
+                        src="https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=800&q=80" 
+                        alt="Salicylic Acid 2% Cleanser"
+                        class="w-full h-full object-contain mix-blend-multiply" 
+                      />
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-1 text-xs text-amber-500 mb-1">
+                        ★★★★★ <span class="text-black font-semibold ml-1">5.0</span> <span class="text-neutral-400">(428)</span>
+                      </div>
+                      <h4 class="font-display font-bold text-lg text-black leading-tight">
+                        Salicylic Acid 2% Clarifying Cleanser
+                      </h4>
+                      <p class="text-xs text-neutral-500 mt-1">200 ml / 6.7 fl. oz.</p>
+                      <p class="font-display font-extrabold text-xl text-black mt-2">$24.00</p>
+                    </div>
+                  </div>
+
+                  <p class="text-xs text-neutral-600 mb-6 leading-relaxed">
+                    Lipophilic beta hydroxy acid penetrates deep into follicular walls to dissolve excess sebum, unclog impacted pores, and eliminate acne-causing micro-colonies.
+                  </p>
+
+                  <!-- Solid Black Add to Cart Button -->
+                  <button 
+                    id="btn-add-match-1"
+                    class="btn-primary w-full py-3.5 px-4 text-xs tracking-widest uppercase font-bold flex items-center justify-center gap-2"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    Add to Cart — $24.00
+                  </button>
+                </div>
+
+                <!-- Product Match 2: Niacinamide Serum -->
+                <div class="border-2 border-black p-6 bg-white flex flex-col justify-between relative">
+                  <!-- Match Header Badge -->
+                  <div class="flex items-center justify-between mb-4">
+                    <span class="bg-cyan-100 text-cyan-900 border border-cyan-300 text-[10px] font-mono font-bold tracking-widest uppercase px-2.5 py-1">
+                      Matched to: Pigmentation & Open Pores
+                    </span>
+                    <span class="text-xs font-mono text-neutral-400">AM & PM · Step 02</span>
+                  </div>
+
+                  <div class="flex gap-6 items-center mb-6">
+                    <div class="w-28 h-28 bg-[#F7F7F7] flex-shrink-0 p-2 border border-neutral-200 flex items-center justify-center">
+                      <img 
+                        src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80" 
+                        alt="Niacinamide 10% + Zinc Serum"
+                        class="w-full h-full object-contain mix-blend-multiply" 
+                      />
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-1 text-xs text-amber-500 mb-1">
+                        ★★★★★ <span class="text-black font-semibold ml-1">4.9</span> <span class="text-neutral-400">(652)</span>
+                      </div>
+                      <h4 class="font-display font-bold text-lg text-black leading-tight">
+                        Niacinamide 10% + Zinc 1% Refining Serum
+                      </h4>
+                      <p class="text-xs text-neutral-500 mt-1">30 ml / 1.0 fl. oz.</p>
+                      <p class="font-display font-extrabold text-xl text-black mt-2">$28.00</p>
+                    </div>
+                  </div>
+
+                  <p class="text-xs text-neutral-600 mb-6 leading-relaxed">
+                    Concentrated Vitamin B3 blocks melanosome transfer to visibly fade post-inflammatory marks, while zinc PCA regulates lipid synthesis and tightens enlarged pore diameter.
+                  </p>
+
+                  <!-- Solid Black Add to Cart Button -->
+                  <button 
+                    id="btn-add-match-2"
+                    class="btn-primary w-full py-3.5 px-4 text-xs tracking-widest uppercase font-bold flex items-center justify-center gap-2"
+                  >
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                    </svg>
+                    Add to Cart — $28.00
+                  </button>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SECTION 2: SHOPPING CATALOG ================= -->
+    <section id="catalog-section" class="py-16 sm:py-24 bg-white border-b border-neutral-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Section Header -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 bg-black text-white text-[11px] font-mono uppercase tracking-widest mb-3">
+              Formulation Library
+            </div>
+            <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-black tracking-tight">
+              Shopping Catalog
+            </h2>
+            <p class="text-neutral-500 text-sm max-w-lg mt-2">
+              Every formula is clinically titrated with high-purity actives. Zero unnecessary fillers. Targeted by specific epidermal biomarkers.
+            </p>
+          </div>
+
+          <!-- Category Filter Tabs -->
+          <div class="flex flex-wrap items-center gap-2">
+            <button data-filter="all" class="filter-tab-btn px-4 py-2 text-xs font-mono uppercase tracking-wider font-semibold bg-black text-white transition-colors">
+              All Formulations
+            </button>
+            <button data-filter="cleansers" class="filter-tab-btn px-4 py-2 text-xs font-mono uppercase tracking-wider font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 transition-colors">
+              Cleansers
+            </button>
+            <button data-filter="serums" class="filter-tab-btn px-4 py-2 text-xs font-mono uppercase tracking-wider font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 transition-colors">
+              Serums
+            </button>
+            <button data-filter="moisturizers" class="filter-tab-btn px-4 py-2 text-xs font-mono uppercase tracking-wider font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 transition-colors">
+              Moisturizers
+            </button>
+            <button data-filter="treatments" class="filter-tab-btn px-4 py-2 text-xs font-mono uppercase tracking-wider font-semibold bg-neutral-100 text-neutral-700 hover:bg-neutral-200 transition-colors">
+              Treatments & SPF
+            </button>
+          </div>
+        </div>
+
+        <!-- Product Grid (Populated dynamically by JavaScript with all required cards) -->
+        <div id="catalog-product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- Rendered by app.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ================= SECTION 3: CLINICAL ETHOS / MINIMALIST PHILOSOPHY ================= -->
+    <section id="clinical-ethos" class="py-16 sm:py-24 bg-neutral-50 border-b border-neutral-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          
+          <div class="space-y-4">
+            <span class="text-xs font-mono uppercase tracking-widest text-neutral-400">01 / Formulation</span>
+            <h3 class="font-display font-bold text-xl text-black">Active Ingredient Transparency</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">
+              We publish exact clinical percentages of every active compound on the front of every bottle. No proprietary mystery blends or diluted extracts.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <span class="text-xs font-mono uppercase tracking-widest text-neutral-400">02 / Diagnostic</span>
+            <h3 class="font-display font-bold text-xl text-black">Computer Vision Precision</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">
+              Our neural network was trained on over 250,000 diverse dermatological evaluations to accurately distinguish between erythema, acne papules, and post-inflammatory hyperpigmentation.
+            </p>
+          </div>
+
+          <div class="space-y-4">
+            <span class="text-xs font-mono uppercase tracking-widest text-neutral-400">03 / Ecology</span>
+            <h3 class="font-display font-bold text-xl text-black">Carbon Neutral & Recycled</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">
+              All packaging is manufactured using 100% PCR glass and bio-based plastics. Shipments are offset with verified carbon-negative freight.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-black text-white pt-16 pb-12 border-t border-neutral-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-12 pb-12 border-b border-neutral-800">
+        
+        <div class="md:col-span-4 space-y-4">
+          <span class="font-display font-bold text-2xl tracking-tighter text-white flex items-center gap-1.5">
+            SKININSIGHTS
+            <span class="text-[10px] font-mono font-normal uppercase px-1.5 py-0.5 bg-white text-black tracking-widest">LAB</span>
+          </span>
+          <p class="text-xs text-neutral-400 max-w-sm leading-relaxed">
+            Minimalist dermatological skincare designed around real-time computer vision diagnosis. Science-backed, cruelty-free, and clinically proven.
+          </p>
+        </div>
+
+        <div class="md:col-span-2 space-y-3">
+          <p class="text-xs font-mono uppercase tracking-widest text-white">Diagnostics</p>
+          <ul class="text-xs text-neutral-400 space-y-2">
+            <li><a href="#scanner-section" class="hover:text-white transition-colors">Skin Scanner</a></li>
+            <li><a href="#ai-report-view" class="hover:text-white transition-colors">AI Reports</a></li>
+            <li><a href="#lifestyle-tips-section" class="hover:text-white transition-colors">Diet Guidelines</a></li>
+            <li><a href="#" class="hover:text-white transition-colors">Clinical Studies</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-2 space-y-3">
+          <p class="text-xs font-mono uppercase tracking-widest text-white">Formulations</p>
+          <ul class="text-xs text-neutral-400 space-y-2">
+            <li><a href="#catalog-section" class="hover:text-white transition-colors">Salicylic Cleanser</a></li>
+            <li><a href="#catalog-section" class="hover:text-white transition-colors">Niacinamide 10%</a></li>
+            <li><a href="#catalog-section" class="hover:text-white transition-colors">Ceramide Barrier</a></li>
+            <li><a href="#catalog-section" class="hover:text-white transition-colors">Mineral SPF 50</a></li>
+          </ul>
+        </div>
+
+        <div class="md:col-span-4 space-y-4">
+          <p class="text-xs font-mono uppercase tracking-widest text-white">Clinical Bulletin</p>
+          <p class="text-xs text-neutral-400">Receive weekly peer-reviewed dermatological studies and skin science updates.</p>
+          <div class="flex items-center">
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              class="w-full bg-neutral-900 border border-neutral-700 px-3.5 py-2.5 text-xs text-white placeholder-neutral-500 focus:outline-none focus:border-white"
+            />
+            <button class="bg-white text-black text-xs font-mono uppercase font-bold px-4 py-2.5 hover:bg-neutral-200 transition-colors">
+              Join
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono text-neutral-500">
+        <p>© 2026 SKININSIGHTS LAB. All Rights Reserved. Dermatologically Tested.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white transition-colors">Privacy Protocol</a>
+          <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+          <a href="#" class="hover:text-white transition-colors">Biometric Security</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ================= FLOATING DARK CHAT BUBBLE (BOTTOM LEFT CORNER) ================= -->
+  <!-- CRUCIAL REQUIREMENT: In bottom left corner for support -->
+  <div class="fixed bottom-6 left-6 z-50">
+    
+    <!-- Floating Dark Chat Bubble Button -->
+    <button 
+      id="floating-chat-bubble"
+      class="w-14 h-14 bg-black text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all border border-neutral-700 relative group chat-bubble-ping"
+      aria-label="Open Skin Support Concierge"
+      title="Skin Insights Support"
+    >
+      <!-- Chat Icon -->
+      <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+      </svg>
+
+      <!-- Active Presence Dot -->
+      <span class="absolute top-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-black"></span>
+
+      <!-- Hover Tooltip -->
+      <span class="absolute left-16 bg-black text-white text-[11px] font-mono uppercase tracking-wider px-3 py-1.5 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg border border-neutral-800">
+        AI Skin Support
+      </span>
+    </button>
+
+    <!-- Floating Interactive Chat Window Modal -->
+    <div 
+      id="chat-window-modal"
+      class="hidden absolute bottom-16 left-0 w-80 sm:w-96 bg-white border-2 border-black shadow-2xl flex flex-col overflow-hidden transition-all duration-300 z-50 rounded-none"
+      style="height: 480px;"
+    >
+      <!-- Chat Header -->
+      <div class="bg-black text-white p-4 flex items-center justify-between border-b border-neutral-800">
+        <div class="flex items-center gap-2.5">
+          <div class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></div>
+          <div>
+            <h4 class="font-display font-bold text-xs uppercase tracking-wider text-white">AI Skin Concierge</h4>
+            <span class="text-[10px] font-mono text-neutral-400">Online · Powered by SkinInsights</span>
+          </div>
+        </div>
+        <button id="btn-close-chat" class="text-neutral-400 hover:text-white text-sm p-1" aria-label="Close chat window">
+          ✕
+        </button>
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="bg-neutral-50 px-3 py-2 border-b border-neutral-200 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <button class="chat-chip-btn text-[10px] font-mono bg-white hover:bg-black hover:text-white text-neutral-700 border border-neutral-300 px-2.5 py-1 whitespace-nowrap transition-colors">
+          Acne routine advice
+        </button>
+        <button class="chat-chip-btn text-[10px] font-mono bg-white hover:bg-black hover:text-white text-neutral-700 border border-neutral-300 px-2.5 py-1 whitespace-nowrap transition-colors">
+          How scan works
+        </button>
+        <button class="chat-chip-btn text-[10px] font-mono bg-white hover:bg-black hover:text-white text-neutral-700 border border-neutral-300 px-2.5 py-1 whitespace-nowrap transition-colors">
+          Shipping & return policy
+        </button>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div id="chat-messages-container" class="flex-1 p-4 overflow-y-auto space-y-3 bg-white">
+        <!-- Initial Concierge Message -->
+        <div class="flex justify-start">
+          <div class="bg-neutral-100 text-black text-xs py-2.5 px-3.5 rounded-2xl rounded-tl-none max-w-[85%] border border-neutral-200 leading-relaxed">
+            <div class="flex items-center gap-1.5 mb-1 text-[10px] text-neutral-500 font-mono uppercase">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> AI Concierge
+            </div>
+            Hello! I am your AI Skincare Concierge. Ask me anything about your skin scan, ingredient pairings, or custom routines.
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Input Field -->
+      <div class="p-3 bg-white border-t border-neutral-200 flex items-center gap-2">
+        <input 
+          id="chat-input-text"
+          type="text" 
+          placeholder="Ask a question about your skin..."
+          class="flex-1 text-xs border border-neutral-300 p-2.5 focus:outline-none focus:border-black placeholder-neutral-400 font-sans"
+        />
+        <button 
+          id="btn-send-chat"
+          class="bg-black text-white px-3.5 py-2.5 text-xs font-mono uppercase font-bold hover:bg-neutral-800 transition-colors"
+          aria-label="Send message"
+        >
+          Send
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ================= SLIDE-OUT CART DRAWER ================= -->
+  <div id="cart-backdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+  <aside 
+    id="cart-drawer" 
+    class="fixed top-0 right-0 bottom-0 w-full max-w-md bg-white border-l border-neutral-200 shadow-2xl z-50 transform translate-x-full transition-transform duration-300 flex flex-col"
+    aria-label="Shopping Cart Drawer"
+  >
+    <!-- Drawer Header -->
+    <div class="p-6 border-b border-neutral-200 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        <h3 class="font-display font-bold text-base uppercase tracking-wider text-black">Your Routine Cart</h3>
+      </div>
+      <button id="btn-close-cart" class="text-neutral-400 hover:text-black p-2 text-sm" aria-label="Close cart">
+        ✕
+      </button>
+    </div>
+
+    <!-- Free Shipping Progress -->
+    <div class="bg-neutral-50 px-6 py-3 border-b border-neutral-200">
+      <p id="free-shipping-text" class="text-xs text-neutral-600 mb-1.5">
+        Add <strong>$50.00</strong> more for Free Carbon-Neutral Shipping
+      </p>
+      <div class="w-full h-1 bg-neutral-200 overflow-hidden">
+        <div id="free-shipping-progress" class="h-full bg-black transition-all duration-300" style="width: 0%;"></div>
+      </div>
+    </div>
+
+    <!-- Cart Items Scrollable List -->
+    <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-4">
+      <!-- Empty state placeholder -->
+      <div id="cart-empty-state" class="h-full flex flex-col items-center justify-center text-center p-8 space-y-3">
+        <svg class="w-12 h-12 text-neutral-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        <p class="text-sm font-display font-semibold text-neutral-700">Your cart is currently empty</p>
+        <p class="text-xs text-neutral-400 max-w-xs">Scan your face or select from our clinical catalog to build your minimalist routine.</p>
+        <button onclick="closeCartDrawer(); document.getElementById('scanner-section').scrollIntoView({behavior:'smooth'});" class="btn-primary px-4 py-2.5 text-xs font-mono uppercase tracking-wider mt-2">
+          Run AI Scan
+        </button>
+      </div>
+    </div>
+
+    <!-- Drawer Footer -->
+    <div id="cart-footer" class="p-6 border-t border-neutral-200 bg-white space-y-4 hidden">
+      <div class="flex justify-between items-center text-xs text-neutral-500 font-mono">
+        <span>SUBTOTAL</span>
+        <span id="cart-subtotal" class="font-bold text-black font-display text-sm">$0.00</span>
+      </div>
+      <div class="flex justify-between items-center text-xs text-neutral-500 font-mono">
+        <span>ESTIMATED CARBON OFFSET</span>
+        <span class="text-emerald-600 font-bold">COMPLIMENTARY</span>
+      </div>
+      <div class="pt-2 border-t border-neutral-100 flex justify-between items-center">
+        <span class="text-sm font-bold uppercase tracking-wider text-black">Total</span>
+        <span id="cart-total" class="font-display font-bold text-xl text-black">$0.00</span>
+      </div>
+
+      <!-- Solid Black Checkout Button -->
+      <button 
+        id="btn-cart-checkout"
+        class="btn-primary w-full py-4 text-xs uppercase tracking-widest font-bold flex items-center justify-center gap-2"
+      >
+        Proceed to Checkout
+      </button>
+
+      <p class="text-[10px] text-neutral-400 text-center font-mono uppercase tracking-wider">
+        30-Day Clinical Satisfaction Guarantee · Secure 256-Bit SSL
+      </p>
+    </div>
+  </aside>
+
+  <!-- ================= FLOATING TOAST NOTIFICATION CONTAINER ================= -->
+  <div id="toast-container" class="fixed top-24 right-4 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- Core JavaScript Module -->
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+/* SkinInsights Minimalist Skincare Design System */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #ffffff;
+  color: #0a0a0a;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono-tech {
+  font-family: var(--font-mono);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+}
+::-webkit-scrollbar-thumb {
+  background: #171717;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #404040;
+}
+
+/* Scanner Laser Animation */
+@keyframes laserSweep {
+  0% {
+    top: 0%;
+    opacity: 0.8;
+  }
+  50% {
+    top: 96%;
+    opacity: 1;
+  }
+  100% {
+    top: 0%;
+    opacity: 0.8;
+  }
+}
+
+.laser-beam {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.4), #10b981, rgba(16, 185, 129, 0.4), transparent);
+  box-shadow: 0 0 16px 3px rgba(16, 185, 129, 0.75), 0 0 30px 6px rgba(16, 185, 129, 0.3);
+  animation: laserSweep 2.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 25;
+}
+
+/* Biometric Mesh Overlay */
+.biometric-grid {
+  background-image: 
+    linear-gradient(to right, rgba(16, 185, 129, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 185, 129, 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Pinpoint Marker Pulse */
+@keyframes radarRing {
+  0% {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.6);
+    opacity: 0;
+  }
+}
+
+.radar-ping {
+  animation: radarRing 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Floating Tag Entrance */
+@keyframes tagFloatIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.floating-tag-animate {
+  animation: tagFloatIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Pulse Glow Effect */
+@keyframes softPulse {
+  0%, 100% {
+    opacity: 0.85;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+.pulse-glow {
+  animation: softPulse 2.5s ease-in-out infinite;
+}
+
+/* SVG Line Drawing */
+@keyframes dash {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.connector-line {
+  stroke-dasharray: 60;
+  stroke-dashoffset: 60;
+  animation: dash 0.8s ease-out forwards;
+}
+
+/* Premium Button Hover Micro-interaction */
+.btn-primary {
+  background-color: #000000;
+  color: #ffffff;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  background-color: #171717;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Clean Product Card */
+.product-card {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+}
+
+.product-card:hover .product-img {
+  transform: scale(1.04);
+}
+
+/* Chat bubble bounce notification */
+@keyframes subtleBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.chat-bubble-ping {
+  animation: subtleBounce 4s ease-in-out infinite;
+}
+
+/* Smooth Fade and Slide Transitions */
+.view-transition {
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Print / Export PDF Styling */
+@media print {
+  header, aside, footer, #floating-chat-bubble, #chat-window-modal, #cart-drawer, #cart-backdrop, #scanner-live-view, #hero-intro-view, #catalog-section, #clinical-ethos, button {
+    display: none !important;
+  }
+  #ai-report-view {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
